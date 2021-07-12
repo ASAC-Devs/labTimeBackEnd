@@ -12,12 +12,13 @@ class Session (models.Model):
     # account =models.ForeignKey(
     #     "account", on_delete=models.CASCADE, null=True, blank=True
     # )
+    
     creationDate=models.DateTimeField(auto_now=True)
     expiryDate=models.DateTimeField(auto_now_add=True)
 
 
 
     def __str__(self):
-        return "{} - {}".format(self.id, self.account)
+        return "{} - {}".format(self.creationDate)
 
-
+  
