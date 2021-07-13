@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+</head>
+<body>
+
+    <h1>to be moved to react</h1>
+    <div id="results">
+
+    <script>
+    
+    fetch('/api/v1/session/').then((resp)=>{
+        resp.json().then((data)=>{
+            console.log(data)
+            resultsDiv=document.getElementById('results');
+            for (r of data.results){
+                resultsDiv.append(r.creationDate ,'/n')
+            }
+        })
+
+        // Delete
+
+        fetch('/api/v1/session/',{
+            method :'DELETE',
+            headers:{
+                'X-CRSFToken':Cookies.get('crsftoken')
+            }
+        })
+
+
+    })
+    </script>
+    </div>
+</body>
+</html>
