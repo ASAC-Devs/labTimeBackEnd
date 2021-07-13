@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.base import Model
+from accounts.models import Profile
 
 class Ticket(models.Model):
     raisedBy =models.ForeignKey(
@@ -17,7 +18,7 @@ class Ticket(models.Model):
     rating=models.IntegerField(default=0)
     
     def __str__(self):
-        return "{} - {}".format(self.raisedBy, self.ticket_id)
+        return "{} - {}".format(self.raisedBy)
 
     class Meta:
         ordering = ["-createdDate"]
@@ -25,6 +26,10 @@ class Ticket(models.Model):
 
 class TA(models.Model):
     name=models.TextField(default='None')
+    ta_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
+  
+
     
     def __str__(self):
        return self.name
@@ -33,6 +38,8 @@ class TA(models.Model):
 
 class Student(models.Model):
     name=models.TextField(default='None')
+    student_id = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
     
     def __str__(self):
        return self.name
