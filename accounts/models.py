@@ -1,16 +1,44 @@
 from django.db import models
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db.models.base import Model
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(
-        get_user_model(), on_delete=models.CASCADE, related_name='profile')
-    
-    first_name=models.CharField(max_length=256)
-    last_name=models.CharField(max_length=256)
-    email=models.EmailField(max_length=256)
+class CustomAccountManager(BaseUserManager):
+    def create_superuser(self, email, user_name, first_name, password, **other_fields):
 
+        other_fields.setdefault('is_staff', True)
+        other_fields.setdefault('is_superuser', True)
+        other_fields.setdefault('is_active', True)
+
+        if other_fields.get('is_staff') is not True:
+            raise ValueError(
+                'Superuser must be assigned to is_staff=True.')
+        if other_fields.get('is_superuser') is not True:
+            raise ValueError(
+                'Superuser must be assigned to is_superuser=True.')
+
+        return self.create_user(email, user_name, first_name, password, **other_fields)
+
+
+    def create_user(self, email, user_name, first_name, password, **other_fields):
+        email = self.normalize_email(email)
+        user = self.model(email=email, user_name=user_name,
+                          first_name=first_name, **other_fields)
+        ordering = ('email',)
+
+        user.set_password(password)
+        user.save()
+        return user
+   
+
+class Profile(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(max_length=255, unique=True)
+    user_name = models.CharField(max_length=150, unique=True)
+    first_name = models.CharField(max_length=150, blank=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
+    password =models.CharField(max_length=255)
+    # last_login=models.DateField(default=False)
     STUDENT = 'Student'
     TA = 'TA'
     ROLE_CHOICES = (
@@ -30,12 +58,10 @@ class Profile(models.Model):
     course=models.CharField(
        choices=Courses_list, null=True, blank=True , max_length=256, help_text='Course')
 
+    objects = CustomAccountManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['user_name', 'first_name','role' ,'course']
+
     def __str__(self):
-        return self.user.username
-
-    class Meta:
-        def __str__(self):
-            pass
-
-    
-
+        return self.user_name
