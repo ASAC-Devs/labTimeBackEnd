@@ -38,7 +38,7 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     password =models.CharField(max_length=255)
-    last_login=models.DateField(default=False)
+    # last_login=models.DateField(default=False)
     STUDENT = 'Student'
     TA = 'TA'
     ROLE_CHOICES = (
